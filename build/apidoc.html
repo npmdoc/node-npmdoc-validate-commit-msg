@@ -1,0 +1,464 @@
+<div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a
+
+        href="https://github.com/kentcdodds/validate-commit-msg#readme"
+
+    >validate-commit-msg (v2.12.1)</a>
+</h1>
+<h4>Script to validate a commit message follows the conventional changelog standard</h4>
+<div class="apidocSectionDiv"><a
+    href="#apidoc.tableOfContents"
+    id="apidoc.tableOfContents"
+><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.validate-commit-msg">module validate-commit-msg</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.validate-commit-msg.validate-commit-msg">
+            function <span class="apidocSignatureSpan"></span>validate-commit-msg
+            <span class="apidocSignatureSpan">(raw)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <span class="apidocSignatureSpan">object <span class="apidocSignatureSpan">validate-commit-msg.</span>config</span>
+
+        </li>
+
+        <li>
+
+            <span class="apidocSignatureSpan">object <span class="apidocSignatureSpan">validate-commit-msg.</span>validateMessage</span>
+
+        </li>
+
+    </ol></li>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.validate-commit-msg.config">module validate-commit-msg.config</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.validate-commit-msg.config.getConfig">
+            function <span class="apidocSignatureSpan">validate-commit-msg.config.</span>getConfig
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.validate-commit-msg.config.getConfigObject">
+            function <span class="apidocSignatureSpan">validate-commit-msg.config.</span>getConfigObject
+            <span class="apidocSignatureSpan">(filename)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.validate-commit-msg.config.getPackageConfig">
+            function <span class="apidocSignatureSpan">validate-commit-msg.config.</span>getPackageConfig
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.validate-commit-msg.config.getRcConfig">
+            function <span class="apidocSignatureSpan">validate-commit-msg.config.</span>getRcConfig
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.validate-commit-msg.validateMessage">module validate-commit-msg.validateMessage</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.validate-commit-msg.validateMessage.validateMessage">
+            function <span class="apidocSignatureSpan">validate-commit-msg.</span>validateMessage
+            <span class="apidocSignatureSpan">(raw)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <span class="apidocSignatureSpan">object <span class="apidocSignatureSpan">validate-commit-msg.validateMessage.</span>config</span>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.validate-commit-msg" id="apidoc.module.validate-commit-msg">module validate-commit-msg</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.validate-commit-msg.validate-commit-msg" id="apidoc.element.validate-commit-msg.validate-commit-msg">
+        function <span class="apidocSignatureSpan"></span>validate-commit-msg
+        <span class="apidocSignatureSpan">(raw)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function validateMessage(raw) {
+  var types = config.types = config.types || &#x27;conventional-commit-types&#x27;;
+
+  // resolve types from a module
+  if (typeof types === &#x27;string&#x27; &#x26;&#x26; types !== &#x27;*&#x27;) {
+    types = Object.keys(require(types).types);
+  }
+
+  var messageWithBody = (raw || &#x27;&#x27;).split(&#x27;\n&#x27;).filter(function(str) {
+    return str.indexOf(&#x27;#&#x27;) !== 0;
+  }).join(&#x27;\n&#x27;);
+
+  var message = messageWithBody.split(&#x27;\n&#x27;).shift();
+
+  if (message === &#x27;&#x27;) {
+    console.log(&#x27;Aborting commit due to empty commit message.&#x27;);
+    return false;
+  }
+
+  var isValid = true;
+
+  if (MERGE_COMMIT_PATTERN.test(message)) {
+    console.log(&#x27;Merge commit detected.&#x27;);
+    return true
+  }
+
+  if (IGNORED.test(message)) {
+    console.log(&#x27;Commit message validation ignored.&#x27;);
+    return true;
+  }
+
+  var match = PATTERN.exec(message);
+
+  if (!match) {
+    error(&#x27;does not match &#x22;&#x3c;type&#x3e;(&#x3c;scope&#x3e;): &#x3c;subject&#x3e;&#x22; !&#x27;);
+    isValid = false;
+  } else {
+    var firstLine = match[1];
+    var squashing = !!match[2];
+    var type = match[3];
+    var scope = match[4];
+    var subject = match[5];
+
+    var SUBJECT_PATTERN = new RegExp(config.subjectPattern || &#x27;.+&#x27;);
+    var SUBJECT_PATTERN_ERROR_MSG = config.subjectPatternErrorMsg || &#x27;subject does not match subject pattern!&#x27;;
+
+    if (firstLine.length &#x3e; MAX_LENGTH &#x26;&#x26; !squashing) {
+      error(&#x27;is longer than %d characters !&#x27;, MAX_LENGTH);
+      isValid = false;
+    }
+
+    // If should auto fix type then do it here
+    if (config.autoFix) {
+      type = lowercase(type);
+    }
+
+    if (types !== &#x27;*&#x27; &#x26;&#x26; types.indexOf(type) === -1) {
+      error(&#x27;&#x22;%s&#x22; is not allowed type ! Valid types are: %s&#x27;, type, types.join(&#x27;, &#x27;));
+      isValid = false;
+    }
+
+    isValid = validateScope(isValid, scope);
+
+    if (config.autoFix) {
+      subject = lowercaseFirstLetter(subject);
+    }
+
+    if (!SUBJECT_PATTERN.exec(subject)) {
+      error(SUBJECT_PATTERN_ERROR_MSG);
+      isValid = false;
+    }
+  }
+
+  // Some more ideas, do want anything like this ?
+  // - Validate the rest of the message (body, footer, BREAKING CHANGE annotations)
+  // - auto add empty line after subject ?
+  // - auto remove empty () ?
+  // - auto correct typos in type ?
+  // - store incorrect messages, so that we can learn
+
+  isValid = isValid || config.warnOnFail;
+
+  if (isValid) { // exit early and skip messaging logics
+    return true;
+  }
+
+  var argInHelp = config.helpMessage &#x26;&#x26; config.helpMessage.indexOf(&#x27;%s&#x27;) !== -1;
+
+  if (argInHelp) {
+    console.log(config.helpMessage, messageWithBody);
+  } else if (message) {
+    console.log(message);
+  }
+
+  if (!argInHelp &#x26;&#x26; config.helpMessage) {
+    console.log(config.helpMessage);
+  }
+
+  return false;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+
+
+
+</div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.validate-commit-msg.config" id="apidoc.module.validate-commit-msg.config">module validate-commit-msg.config</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.validate-commit-msg.config.getConfig" id="apidoc.element.validate-commit-msg.config.getConfig">
+        function <span class="apidocSignatureSpan">validate-commit-msg.config.</span>getConfig
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function getConfig() {
+  return getRcConfig() || getPackageConfig() || {};
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.validate-commit-msg.config.getConfigObject" id="apidoc.element.validate-commit-msg.config.getConfigObject">
+        function <span class="apidocSignatureSpan">validate-commit-msg.config.</span>getConfigObject
+        <span class="apidocSignatureSpan">(filename)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function getConfigObject(filename) {
+  try {
+    var rcFile = findup.sync(process.cwd(), filename);
+    return JSON.parse(fs.readFileSync(resolve(rcFile, filename)));
+  } catch (e) {
+    return null;
+  }
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.validate-commit-msg.config.getPackageConfig" id="apidoc.element.validate-commit-msg.config.getPackageConfig">
+        function <span class="apidocSignatureSpan">validate-commit-msg.config.</span>getPackageConfig
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function getPackageConfig() {
+  var configObject = getConfigObject(&#x27;package.json&#x27;);
+  return configObject &#x26;&#x26; configObject.config &#x26;&#x26; configObject.config[&#x27;validate-commit-msg&#x27;];
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.validate-commit-msg.config.getRcConfig" id="apidoc.element.validate-commit-msg.config.getRcConfig">
+        function <span class="apidocSignatureSpan">validate-commit-msg.config.</span>getRcConfig
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function getRcConfig() {
+  return getConfigObject(&#x27;.vcmrc&#x27;);
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.validate-commit-msg.validateMessage" id="apidoc.module.validate-commit-msg.validateMessage">module validate-commit-msg.validateMessage</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.validate-commit-msg.validateMessage.validateMessage" id="apidoc.element.validate-commit-msg.validateMessage.validateMessage">
+        function <span class="apidocSignatureSpan">validate-commit-msg.</span>validateMessage
+        <span class="apidocSignatureSpan">(raw)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function validateMessage(raw) {
+  var types = config.types = config.types || &#x27;conventional-commit-types&#x27;;
+
+  // resolve types from a module
+  if (typeof types === &#x27;string&#x27; &#x26;&#x26; types !== &#x27;*&#x27;) {
+    types = Object.keys(require(types).types);
+  }
+
+  var messageWithBody = (raw || &#x27;&#x27;).split(&#x27;\n&#x27;).filter(function(str) {
+    return str.indexOf(&#x27;#&#x27;) !== 0;
+  }).join(&#x27;\n&#x27;);
+
+  var message = messageWithBody.split(&#x27;\n&#x27;).shift();
+
+  if (message === &#x27;&#x27;) {
+    console.log(&#x27;Aborting commit due to empty commit message.&#x27;);
+    return false;
+  }
+
+  var isValid = true;
+
+  if (MERGE_COMMIT_PATTERN.test(message)) {
+    console.log(&#x27;Merge commit detected.&#x27;);
+    return true
+  }
+
+  if (IGNORED.test(message)) {
+    console.log(&#x27;Commit message validation ignored.&#x27;);
+    return true;
+  }
+
+  var match = PATTERN.exec(message);
+
+  if (!match) {
+    error(&#x27;does not match &#x22;&#x3c;type&#x3e;(&#x3c;scope&#x3e;): &#x3c;subject&#x3e;&#x22; !&#x27;);
+    isValid = false;
+  } else {
+    var firstLine = match[1];
+    var squashing = !!match[2];
+    var type = match[3];
+    var scope = match[4];
+    var subject = match[5];
+
+    var SUBJECT_PATTERN = new RegExp(config.subjectPattern || &#x27;.+&#x27;);
+    var SUBJECT_PATTERN_ERROR_MSG = config.subjectPatternErrorMsg || &#x27;subject does not match subject pattern!&#x27;;
+
+    if (firstLine.length &#x3e; MAX_LENGTH &#x26;&#x26; !squashing) {
+      error(&#x27;is longer than %d characters !&#x27;, MAX_LENGTH);
+      isValid = false;
+    }
+
+    // If should auto fix type then do it here
+    if (config.autoFix) {
+      type = lowercase(type);
+    }
+
+    if (types !== &#x27;*&#x27; &#x26;&#x26; types.indexOf(type) === -1) {
+      error(&#x27;&#x22;%s&#x22; is not allowed type ! Valid types are: %s&#x27;, type, types.join(&#x27;, &#x27;));
+      isValid = false;
+    }
+
+    isValid = validateScope(isValid, scope);
+
+    if (config.autoFix) {
+      subject = lowercaseFirstLetter(subject);
+    }
+
+    if (!SUBJECT_PATTERN.exec(subject)) {
+      error(SUBJECT_PATTERN_ERROR_MSG);
+      isValid = false;
+    }
+  }
+
+  // Some more ideas, do want anything like this ?
+  // - Validate the rest of the message (body, footer, BREAKING CHANGE annotations)
+  // - auto add empty line after subject ?
+  // - auto remove empty () ?
+  // - auto correct typos in type ?
+  // - store incorrect messages, so that we can learn
+
+  isValid = isValid || config.warnOnFail;
+
+  if (isValid) { // exit early and skip messaging logics
+    return true;
+  }
+
+  var argInHelp = config.helpMessage &#x26;&#x26; config.helpMessage.indexOf(&#x27;%s&#x27;) !== -1;
+
+  if (argInHelp) {
+    console.log(config.helpMessage, messageWithBody);
+  } else if (message) {
+    console.log(message);
+  }
+
+  if (!argInHelp &#x26;&#x26; config.helpMessage) {
+    console.log(config.helpMessage);
+  }
+
+  return false;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
